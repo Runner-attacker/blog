@@ -19,3 +19,12 @@ def post_detail(request, pk):
         "post_detail.html",
         {"post": post},
     )
+
+
+def draft_list(request):
+    posts = Post.objects.filter(published_at_isnull=True)
+    return render(
+        request,
+        "draft_list.html",
+        {"posts": posts},
+    )

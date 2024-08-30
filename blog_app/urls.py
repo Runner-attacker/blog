@@ -12,4 +12,9 @@ urlpatterns = [
         views.post_detail,
         name="post-detail",
     ),
+    path(
+        "draft-list/",
+        views.draft_list,
+        name="draft-list",
+    ),
 ]
