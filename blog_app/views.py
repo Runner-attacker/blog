@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render
+from blog_app.forms import PostForm
 from blog_app.models import Post
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -56,3 +57,40 @@ def post_publish(request, pk):
     post.published_at = timezone.now()
     post.save()
     return redirect("post-list")
+
+
+@login_required
+def post_create(request):
+    form = PostForm()
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect("draft-detail", pk=post.pk)
+
+    return render(
+        request,
+        "post_create.html",
+        {"form": form},
+    )
+
+
+@login_required
+def post_update(request, pk):
+    post = Post.objects.get(pk=pk)
+    form = PostForm(instance=post)
+    if request.method == "POST":
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            post = form.save()
+            if post.published_at:
+                return redirect("post-detail", post.pk)
+            else:
+                return redirect("draft-detail", post.pk)
+    return render(
+        request,
+        "post_create.html",
+        {"form": form},
+    )

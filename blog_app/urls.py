@@ -32,4 +32,14 @@ urlpatterns = [
         views.post_publish,
         name="post-publish",
     ),
+    path(
+        "post-create/",
+        views.post_create,
+        name="post-create",
+    ),
+    path(
+        "post-update/<int:pk>/",
+        views.post_update,
+        name="post-update",
+    ),
 ]
