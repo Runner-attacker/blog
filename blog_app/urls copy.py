@@ -4,42 +4,42 @@ from blog_app import views
 urlpatterns = [
     path(
         "",
-        views.PostListView.as_view(),
+        views.post_list,
         name="post-list",
     ),
     path(
         "post-detail/<int:pk>/",
-        views.PostDetailView.as_view(),
+        views.post_detail,
         name="post-detail",
     ),
     path(
         "draft-list/",
-        views.DraftListView.as_view(),
+        views.draft_list,
         name="draft-list",
     ),
     path(
         "draft-detail/<int:pk>/",
-        views.DraftDetailView.as_view(),
+        views.draft_detail,
         name="draft-detail",
     ),
     path(
         "draft-delete/<int:pk>",
-        views.PostDeleteView.as_view(),
+        views.post_delete,
         name="post-delete",
     ),
     path(
         "post-publish/<int:pk>",
-        views.PostPublishView.as_view(),
+        views.post_publish,
         name="post-publish",
     ),
     path(
         "post-create/",
-        views.PostCreateView.as_view(),
+        views.post_create,
         name="post-create",
     ),
     path(
         "post-update/<int:pk>/",
-        views.PostUpdateView.as_view(),
+        views.post_update,
         name="post-update",
     ),
 ]
