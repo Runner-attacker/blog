@@ -8,8 +8,11 @@ from blog_app.forms import PostForm
 from blog_app.models import Post
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, View
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, View ,DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+
+# Create your views here.
 
 
 class PostListView(ListView):
@@ -22,9 +25,6 @@ class PostListView(ListView):
             "-published_at"
         )
         return posts
-
-
-# Create your views here.
 
 
 class PostDetailView(DetailView):
@@ -65,28 +65,19 @@ class DraftDetailView(LoginRequiredMixin, DetailView):
         return queryset
 
 
-@login_required
-def draft_detail(request, pk):
-    post = Post.objects.get(pk=pk, published_at__isnull=True)
-    return render(
-        request,
-        "draft_detail.html",
-        {"post": post},
-    )
+class PostDeleteView(DeleteView):
+    model = Post
+    success_url = reverse_lazy("post-list")
 
+    def form_valid(self, form):
+        messages.success(self.request, "Post was deleted successfully.")
+        return super().form_valid(form)
 
-class PostDeleteView(LoginRequiredMixin, View):
-    def get(self, request, pk):
-        post = Post.objects.get(pk=pk)
-        post.delete()
-        return redirect("post-list")
-
-
-@login_required
-def post_delete(request, pk):
-    post = Post.objects.get(pk=pk)
-    post.delete()
-    return redirect("post-list")
+# class PostDeleteView(LoginRequiredMixin, View):
+#     def get(self, request, pk):
+#         post = Post.objects.get(pk=pk)
+#         post.delete()
+#         return redirect("post-list")
 
 
 class PostPublishView(LoginRequiredMixin, View):
@@ -98,10 +89,10 @@ class PostPublishView(LoginRequiredMixin, View):
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
-    model = (Post,)
+    model = Post
     template_name = "post_create.html"
     form_class = PostForm
-    # success_url = reverse_lazy("post-list")
+    # success_url = reverse_lazy("post-list") this is done when the reidrect webpage doesnot need id
 
     def get_success_url(self) -> str:
         return reverse_lazy("draft-detail", kwargs={"pk": self.object.pk})
